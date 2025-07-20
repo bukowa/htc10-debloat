@@ -159,6 +159,14 @@ PRIV_APP_REMOVE_LIST=(
 	Velvet
 )
 
+EXTRA_REMOVE_PATHS=(
+    "/system/priv-app/installer"
+    "/preload/Boost+.apk"
+    "/preload/UAR_Stub.apk"
+    "/preload/Flashlight.apk"
+    "/preload/Viveport_Inst.apk"
+)
+
 echo ""
 echo "Removing unwanted applications from /system/app/..."
 for app in "${APP_REMOVE_LIST[@]}"; do
@@ -184,13 +192,24 @@ for app in "${PRIV_APP_REMOVE_LIST[@]}"; do
     fi
 done
 
+echo ""
 echo "Removing extras..."
-# facebook installer
-rm -rf /system/priv-app/installer
-rm /preload/Boost+.apk
-rm /preload/UAR_Stub.apk
-rm /preload/Flashlight.apk
-rm /preload/Viveport_Inst.apk
+
+for path in "${EXTRA_REMOVE_PATHS[@]}"; do
+    if [ -e "$path" ]; then
+        echo "Removing $path..."
+        rm -rf "$path"
+    else
+        echo "Warning: $path not found, skipping."
+    fi
+done
+
+echo "--> Removing XML configuration files from /preload/..."
+# Use a wildcard to delete all of them
+if [ -f "/preload/HTC__002.xml" ]; then # Check if any exist before trying
+    echo "    Deleting all HTC__*.xml files"
+    rm -f /preload/HTC__*.xml
+fi
 
 echo ""
 echo "Cleaning up residual files (e.g., ODEX/ART files)..."
@@ -209,5 +228,4 @@ sync
 
 echo "Debloating script complete. It is HIGHLY RECOMMENDED to reboot your device now."
 echo "If your device encounters bootloop issues, restore your NANDROID backup."
-# Uncomment the line below if you want the device to automatically reboot
 reboot
