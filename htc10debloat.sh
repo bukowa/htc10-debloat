@@ -23,6 +23,7 @@ echo "Mounting /system partition as read-write..."
 # It's good practice to try multiple paths for mount if one fails, or assume current path is correct
 # For Android, /system is typically mounted directly from root.
 mount -o rw,remount /system || { echo "Failed to remount /system. Exiting."; exit 1; }
+mount -o rw,remount /preload || { echo "Failed to remount /preload. Exiting."; exit 1; }
 
 APP_REMOVE_LIST=(
     AndroidPay
@@ -155,6 +156,7 @@ PRIV_APP_REMOVE_LIST=(
 	CheckinProvider
 	GooglePlusPlugin
 	AMapNetworkLocation
+	Velvet
 )
 
 echo ""
@@ -188,6 +190,7 @@ rm -rf /system/priv-app/installer
 rm /preload/Boost+.apk
 rm /preload/UAR_Stub.apk
 rm /preload/Flashlight.apk
+rm /preload/Viveport_Inst.apk
 
 echo ""
 echo "Cleaning up residual files (e.g., ODEX/ART files)..."
